@@ -74,7 +74,12 @@ module Jekyll
     
     default_locale_in_subfolder = site.config["default_locale_in_subfolder"]
     
-    if default_lang != current_lang
+    if default_lang != current_lang       
+      # delete all collections automatically from non-default language  
+      site.collections.keys.each do |collection|
+        payload["site"][collection]&.delete_if { true }
+      end
+
       static_files.delete_if do |static_file|
         next true if (static_file.name == 'base.html' && default_locale_in_subfolder)
 
